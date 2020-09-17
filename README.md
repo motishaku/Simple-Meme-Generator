@@ -15,3 +15,6 @@ As default, a SQLite database is being used, in order to setup MYSQL database in
 * Add permission system with more admin functionality.
 * Improve meme making system and add more text editing features.
 * Add a platform for user to share their memes.
+
+
+<img src="https://i.imgur.com/OS0gAVr.png" data-canonical-src="https://i.imgur.com/OS0gAVr.png" width="400" height="200" />
