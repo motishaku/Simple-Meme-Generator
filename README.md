@@ -17,4 +17,4 @@ As default, a SQLite database is being used, in order to setup MYSQL database in
 * Add a platform for user to share their memes.
 
 
-<img src="https://i.imgur.com/OS0gAVr.png" data-canonical-src="https://i.imgur.com/OS0gAVr.png" width="400" height="200" />
+<img src="https://i.imgur.com/OS0gAVr.png" data-canonical-src="https://i.imgur.com/OS0gAVr.png" width="420" height="220" />
