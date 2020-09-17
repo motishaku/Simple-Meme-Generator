@@ -1,0 +1,102 @@
+{% extends "extended_layout.html" %}
+{% block content %}
+    <h1> Memes Templates</h1>
+    <div >
+        <div class="row"  id="row">
+        {% for template in templates %}
+            <div class="col-3 h-5 mb-3">
+              <div class="card" style="width: 10rem;">
+                <img class="card-img-top" src="{{ url_for('static', filename='templates/' + template.file_name) }}" width="130" height="130" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{ template.name }}</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><b>Uploaded by: </b> {{ User.query.get(template.uploaded_by).username }}</li>
+                </ul>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><b>Times used: </b> {{ template.usage }}</li>
+                </ul>
+                <div class="card-body">
+                    <a href="#" class="card-link" onclick="showMeme(this)">Create meme</a>
+                </div>
+              </div>
+            </div>
+        {% endfor %}
+            </div>
+        <button type="button" class="btn btn-dark btn-sm" data-toggle="modal" data-target="#addTemplate">
+            Add a new template
+        </button>
+    </div>
+
+
+    <!-- Add Template Modal -->
+    <div class="modal fade" id="addTemplate" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">Add a new template</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row form-inline ml-1">
+                            {{ form.name.label (class_="ml-2")}}
+                            {{ form.name (class_="form-control form-control-sm  mx-sm-3", placeholder='Enter Template Name')}}
+                    </div>
+                    <div class="form-group ml-2">
+                        {{ form.image.label (clas_="ml-1")}}
+                        {{ form.image }}
+                    </div>
+                </div>
+                <div class="modal-footer text-left">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    {{ form.submit (class_="btn btn-dark") }}
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+
+<script>
+    function showMeme(cardLink){
+        try {
+            document.getElementById('statscontent').remove();
+        }
+        catch {}
+        document.getElementById('mememaker').classList.remove('d-none');
+        source = cardLink.parentElement.parentElement.children[0].src;
+        name = cardLink.parentElement.parentElement.children[1].children[0].innerHTML;
+        image = document.getElementById('memeimg');
+        image.src = source;
+        image.oldName = source;
+        memeName = document.getElementById('memename');
+        memeName.innerHTML = name;
+    }
+
+
+    function generate_meme(linkObject){
+        imageName = linkObject.parentElement.parentElement.children[0].oldName
+        topText = document.getElementById('toptext').value;
+        bottomText = document.getElementById('bottomtext').value;
+        console.log(imageName, topText, bottomText)
+
+        const xhr = new XMLHttpRequest();
+        var url = window.location.href.replace('/templates', '/creatememe');
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                const response = JSON.parse(xhr.responseText);
+                linkObject.parentElement.parentElement.children[0].src = "data:image/png;base64, " + response['result']
+            }
+        };
+        const json = { "top": topText, "bottom": bottomText, "image": imageName };
+        xhr.open('POST', url);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(json));
+            }
+</script>
+
+{% endblock %}

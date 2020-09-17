@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block layout %}
+    <div class="col-md-4 mt-3" id="statscontent">
+          <div class="content-section " >
+            <h3>Memes stats</h3>
+            <p class='text-muted'>
+              <ul class="list-group">
+                <li id="memestotal" class="list-group-item list-group-item-light">Amount of memes total: </li>
+                <li id="memestoday" class="list-group-item list-group-item-light">Amount of memes today: </li>
+                <li id="memetemplates" class="list-group-item list-group-item-light">Amount of templates: </li>
+                <li id="mememakers" class="list-group-item list-group-item-light">Amount of meme makers: </li>
+              </ul>
+            </p>
+          </div>
+    </div>
+    <div class="col-md-4 mt-3  d-none" id="mememaker">
+          <div class="content-section" >
+                <div class="card" style="width: 18rem;">
+                  <img class="card-img-top" oldName="" id="memeimg" src="..." alt="Card image cap" width="250" height="250">
+                  <div class="card-body">
+                      <h5 class="card-title" id="memename"></h5>
+                      <p class="card-text"></p>
+                  </div>
+                  <ul class="list-group list-group-flush">
+                      <li class="list-group-item">Top Text:
+                        <input type="text" id="toptext">
+                      </li>
+                      <li class="list-group-item">Bottom Text:
+                          <input type="text" id="bottomtext">
+                      </li>
+                  </ul>
+                  <div class="card-body">
+                      <a href="#" class="card-link" onclick="generate_meme(this)">Generate meme</a>
+                  </div>
+                </div>
+          </div>
+    </div>
+
+<script type="text/javascript">
+        function get_stats() {
+            const xhr = new XMLHttpRequest();
+
+            xhr.onload = () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    const response = JSON.parse(xhr.responseText);
+                    memesTotal = document.getElementById('memestotal')
+                    memesToday = document.getElementById('memestoday')
+                    memesTemplates = document.getElementById('memetemplates')
+                    memesMakers = document.getElementById('mememakers')
+                    memesTotal.innerHTML = memesTotal.innerHTML + response['total']
+                    memesToday.innerHTML = memesToday.innerHTML + response['today']
+                    memesTemplates.innerHTML = memesTemplates.innerHTML + response['templates']
+                    memesMakers.innerHTML = memesMakers.innerHTML + response['users']
+                }
+            };
+            xhr.open('GET', window.origin + '/stats');
+            xhr.send();
+        }
+        window.onload = get_stats();
+</script>
+{% endblock layout%}
